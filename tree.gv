@@ -1,0 +1,16 @@
+digraph G {
+	program -> declaration
+	declaration -> methodDeclaration
+	methodDeclaration -> methodType
+	methodDeclaration -> block
+	block -> statement
+	statement -> expression
+	expression -> expression1
+	expression -> op
+	expression -> expression2
+	expression1 -> literal
+	expression1 -> int_literal
+	op -> arith_op
+	expression2 -> literal
+	expression2 -> int_literal
+}

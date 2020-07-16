@@ -1,0 +1,15 @@
+0 program
+1 declaration
+2 methodDeclaration
+3 methodType
+3 block
+4 statement
+5 expression
+6 expression
+7 literal
+8 int_literal
+6 op
+7 arith_op
+6 expression
+7 literal
+8 int_literal
