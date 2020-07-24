@@ -37,6 +37,10 @@ class MainWindow(QMainWindow):
         command = 'py ./javacreate.py'
         os.system(command)
 
+    def on_help_click(self):
+        command = 'help.txt'
+        os.system(command)
+
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setStyleSheet("background-color: black;")
@@ -102,6 +106,11 @@ class MainWindow(QMainWindow):
         button_java.setStyleSheet('color: white; background-color: red;')
         button_java.move(1050, 22)
         button_java.clicked.connect(self.on_java_click)
+        #help button
+        button_help = QPushButton('Help', self)
+        button_help.setStyleSheet('color: white; background-color: red;')
+        button_help.move(1050, 62)
+        button_help.clicked.connect(self.on_help_click)
 
 
 app = QApplication(sys.argv)

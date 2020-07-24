@@ -1,0 +1,8 @@
+﻿1. En el primer campo se ingresa el nombre de un archivo para la gramatica y al correr submit se generan las clases pertinentes para Python (Lexer, Listener, Parser, Visitor)
+
+2. En este campo se ingresa el nombre de un archivo de prueba el cual genera un output.txt con el arbol
+
+3. Para mostrar el arbol se presiona el boton de display tree (aca se muestra en forma de texto)
+
+4. El boton de java genera las clases para java y abre una consola, en la consola se puede pegar cualquier programa de prueba para la gramatica y
+se mostrará un árbol visual. Después de pegar el programa es necesario ingresar ctrl z para que sepa que es el final del programa la consola.

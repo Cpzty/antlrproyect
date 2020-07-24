@@ -14,7 +14,7 @@ varDeclaration: varType ID ';' | varType ID '[' NUM ']' ';';
 
 varType: 'int' | 'char' | 'boolean' | 'struct' ID | structDeclaration | 'void';
 
-methodDeclaration: methodType ID '(' (parameter)* ')' block;
+methodDeclaration: methodType ID '(' (parameter',')* ')' block;
 
 methodType: 'int' | 'char' | 'boolean' | 'void';
 
@@ -44,7 +44,7 @@ expression: location
           | '(' expression ')'
           ;
 
-methodCall: ID '(' (arg)* ')';
+methodCall: ID '(' (arg',')* ')';
 
 arg: expression;
 
