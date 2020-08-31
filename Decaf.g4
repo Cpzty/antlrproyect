@@ -14,7 +14,7 @@ varDeclaration: varType ID ';' | varType ID '[' NUM ']' ';';
 
 varType: 'int' | 'char' | 'boolean' | 'struct' ID | structDeclaration | 'void';
 
-methodDeclaration: methodType ID '(' (parameter',')* ')' block;
+methodDeclaration : methodType ID '(' (parameter (',' parameter)*)* ')' block  ;
 
 methodType: 'int' | 'char' | 'boolean' | 'void';
 
@@ -33,24 +33,35 @@ statement: 'if' '(' expression ')' block ('else' block)?
          | (expression)? ';'
          ;
 
-location: ID (expression)? ('.' location)? ;
+
+location: (ID | ID '[' expression ']') ('.' location)?;
 
 expression: location
           | methodCall
           | literal
-          | expression op expression
+          |'(' expression ')'
+          | left=expression op=('*'|'/'|'%') right=expression
+          | left=expression op=('+'|'-') right=expression
+          | left=expression opcond right=expression
           | '-' expression
           | '!' expression
-          | '(' expression ')'
           ;
 
-methodCall: ID '(' (arg',')* ')';
+methodCall :    ID '(' arg1 ')' ;
+
+arg1    :   arg2 | ;
+
+arg2    :   (arg) (',' arg)* ;
 
 arg: expression;
 
-op: arith_op | rel_op | eq_op | cond_op;
+//op: arith_op1 | arith_op2 | rel_op | eq_op | cond_op;
 
-arith_op: '+' | '-' | '*' | '/' | '%';
+arith_op1:  '*' | '/' | '%';
+
+arith_op2: '+' | '-';
+
+opcond: rel_op | eq_op | cond_op;
 
 rel_op: '<' | '>' | '<=' | '>=';
 

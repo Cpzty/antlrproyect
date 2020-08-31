@@ -157,6 +157,26 @@ public interface DecafListener extends ParseTreeListener {
 	 */
 	void exitMethodCall(DecafParser.MethodCallContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DecafParser#arg1}.
+	 * @param ctx the parse tree
+	 */
+	void enterArg1(DecafParser.Arg1Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link DecafParser#arg1}.
+	 * @param ctx the parse tree
+	 */
+	void exitArg1(DecafParser.Arg1Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link DecafParser#arg2}.
+	 * @param ctx the parse tree
+	 */
+	void enterArg2(DecafParser.Arg2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link DecafParser#arg2}.
+	 * @param ctx the parse tree
+	 */
+	void exitArg2(DecafParser.Arg2Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link DecafParser#arg}.
 	 * @param ctx the parse tree
 	 */
@@ -167,25 +187,35 @@ public interface DecafListener extends ParseTreeListener {
 	 */
 	void exitArg(DecafParser.ArgContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DecafParser#op}.
+	 * Enter a parse tree produced by {@link DecafParser#arith_op1}.
 	 * @param ctx the parse tree
 	 */
-	void enterOp(DecafParser.OpContext ctx);
+	void enterArith_op1(DecafParser.Arith_op1Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link DecafParser#op}.
+	 * Exit a parse tree produced by {@link DecafParser#arith_op1}.
 	 * @param ctx the parse tree
 	 */
-	void exitOp(DecafParser.OpContext ctx);
+	void exitArith_op1(DecafParser.Arith_op1Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link DecafParser#arith_op}.
+	 * Enter a parse tree produced by {@link DecafParser#arith_op2}.
 	 * @param ctx the parse tree
 	 */
-	void enterArith_op(DecafParser.Arith_opContext ctx);
+	void enterArith_op2(DecafParser.Arith_op2Context ctx);
 	/**
-	 * Exit a parse tree produced by {@link DecafParser#arith_op}.
+	 * Exit a parse tree produced by {@link DecafParser#arith_op2}.
 	 * @param ctx the parse tree
 	 */
-	void exitArith_op(DecafParser.Arith_opContext ctx);
+	void exitArith_op2(DecafParser.Arith_op2Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link DecafParser#opcond}.
+	 * @param ctx the parse tree
+	 */
+	void enterOpcond(DecafParser.OpcondContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DecafParser#opcond}.
+	 * @param ctx the parse tree
+	 */
+	void exitOpcond(DecafParser.OpcondContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DecafParser#rel_op}.
 	 * @param ctx the parse tree

@@ -195,6 +195,30 @@ public class DecafBaseListener implements DecafListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArg1(DecafParser.Arg1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArg1(DecafParser.Arg1Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArg2(DecafParser.Arg2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArg2(DecafParser.Arg2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterArg(DecafParser.ArgContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -207,25 +231,37 @@ public class DecafBaseListener implements DecafListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterOp(DecafParser.OpContext ctx) { }
+	@Override public void enterArith_op1(DecafParser.Arith_op1Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitOp(DecafParser.OpContext ctx) { }
+	@Override public void exitArith_op1(DecafParser.Arith_op1Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterArith_op(DecafParser.Arith_opContext ctx) { }
+	@Override public void enterArith_op2(DecafParser.Arith_op2Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitArith_op(DecafParser.Arith_opContext ctx) { }
+	@Override public void exitArith_op2(DecafParser.Arith_op2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOpcond(DecafParser.OpcondContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOpcond(DecafParser.OpcondContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

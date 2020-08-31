@@ -1,15 +1,7 @@
 program
   declaration
-    methodDeclaration
-      methodType
-      block
-        statement
-          expression
-            expression
-              literal
-                int_literal
-            op
-              arith_op
-            expression
-              literal
-                int_literal
+    varDeclaration
+      varType
+  declaration
+    varDeclaration
+      varType

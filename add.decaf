@@ -1,6 +1,6 @@
 class Program {
     int main(){
-        return 33 + 55 ;
+        return (1+2)*3;
         //do comments work?
     }
 }

@@ -1,0 +1,22 @@
+class Program {
+
+    void pizza(){
+        int a;
+        return;
+    }
+
+    boolean main(int c, char a){
+        int a;
+        boolean p;
+        char t;
+        t = False;
+        p = 1;
+        //int a;
+        a = 2;
+        b = 3;
+
+
+        return 0;
+        //do comments work?
+    }
+}

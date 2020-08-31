@@ -1,0 +1,9 @@
+class Program {
+    void main(){
+        int p[1];
+        int a;
+        a = 1;
+        return (1+2)*3;
+        //do comments work?
+    }
+}

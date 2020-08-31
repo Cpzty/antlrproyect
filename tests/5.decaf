@@ -1,0 +1,13 @@
+class Program {
+
+    void pizza(int a, boolean b, char c){
+        return;
+    }
+
+    int main(int a){
+        int a;
+        pizza(1, a, 'hey');
+        return 0;
+        //do comments work?
+    }
+}

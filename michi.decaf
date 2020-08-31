@@ -1,0 +1,7 @@
+class Program {
+   int holis;
+   int h;
+   holis = 5;
+   h = 10;
+   return 60+54*7
+}
