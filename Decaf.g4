@@ -42,7 +42,10 @@ expression: location
           |'(' expression ')'
           | left=expression op=('*'|'/'|'%') right=expression
           | left=expression op=('+'|'-') right=expression
-          | left=expression opcond right=expression
+          | left_num=int_literal rel_op right_num=int_literal
+          | left_num=int_literal eq_op right_num=int_literal
+          | left_bool=bool_literal eq_op right_bool=bool_literal
+          | left_char=char_literal eq_op right_char=char_literal
           | left_bool=bool_literal cond_op right_bool=bool_literal
           | '-' expression
           | '!' expression

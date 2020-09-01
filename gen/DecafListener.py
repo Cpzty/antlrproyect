@@ -137,7 +137,6 @@ class DecafListener(ParseTreeListener):
     # Enter a parse tree produced by DecafParser#methodCall.
     def enterMethodCall(self, ctx:DecafParser.MethodCallContext):
         pass
-        #print(ctx.arg1().getText())
 
     # Exit a parse tree produced by DecafParser#methodCall.
     def exitMethodCall(self, ctx:DecafParser.MethodCallContext):
