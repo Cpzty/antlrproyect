@@ -112,7 +112,11 @@ def traverse(tree, rule_names, indent = 0):
                             pass
                         else:
                             if temp_params_table[indx] == 'int':
-                                int(item)
+                                if(len(item)==1):
+                                    int(item)
+                                else:
+                                    params_list[indx] = eval(item)
+                                    print('expresion {} convertida a {} en llamada a metodo {}'.format(item,params_list[indx], tree.ID().getText()))
                             elif temp_params_table[indx] == 'boolean':
                                 bool(item)
 
@@ -128,14 +132,25 @@ def traverse(tree, rule_names, indent = 0):
 
                 # update offset
                 if tree.varType().getText() == 'int':
-                    offset[0] = offset[0] + 4
+                    if tree.NUM() != None:
+                        offset[0] = offset[0] + (4 * int(tree.NUM().getText()))
+                        #print('offset', offset[0])
+                    else:
+                        #print('nope ', tree.getText())
+                        offset[0] = offset[0] + 4
 
                 elif tree.varType().getText() == 'char':
-                    offset[0] = offset[0] + 1
+                    if tree.NUM() != None:
+                        offset[0] = offset[0] + (1 * int(tree.NUM().getText()))
+                    else:
+                        offset[0] = offset[0] + 1
 
                 # else boolean
                 elif tree.varType().getText() == 'boolean':
-                    offset[0] = offset[0] + 1
+                    if tree.NUM() != None:
+                        offset[0] = offset[0] + (1 * int(tree.NUM().getText()))
+                    else:
+                        offset[0] = offset[0] + 1
 
             else:
                 print('variable {} duplicada en metodo {}\n'.format(tree.ID().getText(), current_scope[-1]))
@@ -146,7 +161,15 @@ def traverse(tree, rule_names, indent = 0):
             #check that void type methods dont return stuff
 
             if 'if' in tree.getText():
-                print(tree.expression().getText())
+                print((tree.expression().getText()))
+                #append dummies
+                current_scope.append(current_scope[-1])
+                if  type(eval(tree.expression().getText())) != bool:
+                    print('expresion {} no se resuelve a booleano'.format(tree.expression().getText()))
+
+
+            if 'while' in tree.getText():
+                current_scope.append(current_scope[-1])
 
             if 'return' in tree.getText():
                 #check expression

@@ -1,0 +1,13 @@
+class Program {
+
+    void pizza(int a){
+        return;
+    }
+
+    int main(){
+        int a;
+        if(1!='3'){};
+        return 0;
+        //do comments work?
+    }
+}

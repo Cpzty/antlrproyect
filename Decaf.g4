@@ -43,6 +43,7 @@ expression: location
           | left=expression op=('*'|'/'|'%') right=expression
           | left=expression op=('+'|'-') right=expression
           | left=expression opcond right=expression
+          | left_bool=bool_literal cond_op right_bool=bool_literal
           | '-' expression
           | '!' expression
           ;
@@ -61,7 +62,7 @@ arith_op1:  '*' | '/' | '%';
 
 arith_op2: '+' | '-';
 
-opcond: rel_op | eq_op | cond_op;
+opcond: rel_op | eq_op;
 
 rel_op: '<' | '>' | '<=' | '>=';
 
