@@ -1,0 +1,6 @@
+class Program {
+    int main(int a, int b){
+        return 2;
+        //do comments work?
+    }
+}

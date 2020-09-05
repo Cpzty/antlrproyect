@@ -2,9 +2,7 @@ class Program {
 
     int main(char par){
         int a;
-        int a;
-        b = 2;
-
+        int c[-1];
         return 0;
         //do comments work?
     }
