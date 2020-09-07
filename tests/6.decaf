@@ -1,12 +1,11 @@
 class Program {
 
     void pizza(int a){
-        return;
     }
 
     int main(int a){
         int a;
-        pizza(1+2);
+        a = pizza(1+2);
         return 0;
         //do comments work?
     }

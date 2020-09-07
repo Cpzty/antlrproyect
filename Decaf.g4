@@ -40,18 +40,23 @@ expression: location
           | methodCall
           | literal
           |'(' expression ')'
-          | left=expression op=('*'|'/'|'%') right=expression
-          | left=expression op=('+'|'-') right=expression
-          | left_num=int_literal rel_op right_num=int_literal
+          //| left_num=int_literal op=('*'|'/'|'%') right_num=int_literal
+          //| left_num=int_literal op=('+'|'-') right_num=int_literal
+          //| left_num=int_literal|methodCall|ID op=('*'|'/'|'%') right_num=int_literal|methodCall|ID
+          //| left_num=int_literal|methodCall|ID op=('+'|'-') right_num=int_literal|methodCall|ID
+          | int_literal | methodCall | ID op=('*'|'/'|'%') int_literal | methodCall | ID
+          | int_literal | methodCall | ID op=('+'|'-') int_literal | methodCall | ID
+          | left_rel=int_literal|ID rel_op right_rel=int_literal|ID
           | left_num=int_literal eq_op right_num=int_literal
-          | left_bool=bool_literal eq_op right_bool=bool_literal
-          | left_char=char_literal eq_op right_char=char_literal
-          | left_bool=bool_literal cond_op right_bool=bool_literal
+          | left_num=int_literal|location eq_op right_num=int_literal|location
+          | left_bool=bool_literal|ID eq_op right_bool=bool_literal|ID
+          | left_char=char_literal|ID eq_op right_char=char_literal|ID
+          | left_bool=bool_literal|ID cond_op right_bool=bool_literal|ID
           | '-' expression
           | '!' expression
           ;
 
-methodCall :    ID '(' arg1 ')' ;
+methodCall :    ID '('  ')' | ID '(' arg1 ')' ;
 
 arg1    :   arg2 | ;
 

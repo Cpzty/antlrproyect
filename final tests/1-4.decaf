@@ -2,18 +2,19 @@ class Program {
 
     void pizza(){
         int queso;
-        int queso;
         return;
     }
 
-    int main(){
+    int main(boolean e, char g){
         int a;
         int a;
         char d;
+        boolean arr[0];
         b = 2;
-        d = '1';
+        d = 'c';
+
 
         return 0;
-        //do comments work?
+
     }
 }

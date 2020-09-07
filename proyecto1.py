@@ -1,7 +1,7 @@
 import os
 import sys
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QAction, QTabWidget, QVBoxLayout, QPlainTextEdit, QFileDialog, QLabel
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import pyqtSlot, Qt
 
 
@@ -82,6 +82,7 @@ class MyTableWidget(QWidget):
         #Elements for 2nd tab
         self.ErrorMessages = QLabel(self)
         self.TableMessages = QLabel(self)
+        self.ErrorMessages.setFont(QFont('Arial', 14))
         #Add to tab1
         self.tab1.layout.addWidget(self.TextEditor)
         self.tab1.layout.addWidget(self.uploadBtn)
