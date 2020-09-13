@@ -23,15 +23,23 @@ types_table['int'] = 4
 types_table['boolean'] = 1
 types_table['char'] = 1
 
-#class ImpListener(DecafListener):
-    #def enterMethodDeclaration(self, ctx):
-        #print(ctx.methodType().getText() + ' ' + ctx.ID().getText())
+class ImpListener(DecafListener):
+    def enterMethodDeclaration(self, ctx):
+        offset[0] = 0
         #current_scope.clear()
         #methods_table.append(ctx.methodType().getText())
         #set scope remove at exitMethod
         #current_scope.append(ctx.ID().getText())
         #print(methods_table)
-    #def enterVarDeclaration(self, ctx):
+    def exitMethodDeclaration(self, ctx):
+        offset[0] = 0
+
+    def enterStructDeclaration(self, ctx):
+        offset[0] = 0
+
+    def exitStructDeclaration(self, ctx):
+        offset[0] = 0
+
         #print()
 
 def parse(argv):
@@ -51,7 +59,8 @@ def parse(argv):
         f.write((Trees.toStringTree(tree, None, parser)))
 
         f.close()
-        printer = DecafListener()
+        #printer = DecafListener()
+        printer = ImpListener()
         walker = ParseTreeWalker()
         walker.walk(printer, tree)
 
@@ -69,11 +78,14 @@ def traverse(tree, rule_names, indent = 0):
         if tree.getText() == '}':
             #pop scope
             current_scope.pop()
+            offset[0] = 0
         pass
     else:
         #print("{0}{1}".format("  " * indent, rule_names[tree.getRuleIndex()]))
         #methods
         if rule_names[tree.getRuleIndex()] == 'methodDeclaration':
+            #reset offset
+            #offset[0] = 0
             #push scope
             current_scope.append(tree.ID().getText())
             #fill methods table
@@ -93,7 +105,13 @@ def traverse(tree, rule_names, indent = 0):
                 #insert_params.clear()
                     #print(tree.parameter(indx).getText())
         elif rule_names[tree.getRuleIndex()] == 'methodCall':
-            if tree.arg1() != None:
+            noargs = ['false']
+            try:
+                tree.arg1()
+            except:
+                noargs[0] = 'true'
+
+            if noargs[0] == 'false' and  tree.arg1() != None:
                 params_list = tree.arg1().getText().split(",")
                 #print('list of params ', params_list)
                 #fetch params from params table
@@ -138,7 +156,11 @@ def traverse(tree, rule_names, indent = 0):
                 remove_struct = tree.varType().getText()
                 if 'struct' in remove_struct:
                     remove_struct = remove_struct[-1]
-                symbols_table[tree.ID().getText(), current_scope[-1]] = [remove_struct, offset[0]]
+                if (tree.NUM()) == None:
+                    symbols_table[tree.ID().getText(), current_scope[-1]] = [remove_struct, offset[0]]
+
+                else:
+                    symbols_table[tree.ID().getText(), current_scope[-1]] = [remove_struct, offset[0], 'array']
 
                 # update offset
                 if tree.varType().getText() == 'int':
@@ -168,6 +190,8 @@ def traverse(tree, rule_names, indent = 0):
 
         #structs
         elif rule_names[tree.getRuleIndex()] == 'structDeclaration':
+            #reset offset
+            #offset[0] = 0
             #push the id as scope
             #print('oh nyo: ', tree.ID().getText())
             current_scope.append(tree.ID().getText())
@@ -178,8 +202,21 @@ def traverse(tree, rule_names, indent = 0):
         elif rule_names[tree.getRuleIndex()] == 'statement':
             #check that void type methods dont return stuff
 
+            #rule 10
+            bool_check = ['1','0','false','true', '<=', '>=', '<', '>', '!=', '==', '||', '&&']
+            bool_flag = False
             if 'if' in tree.getText():
                 #print('umm: ', (tree.expression().getText()))
+                if_bool_check = tree.expression().getText()
+                #print(if_bool_check)
+                #print(len(if_bool_check))
+                #check all
+                for condicion in bool_check:
+                    if condicion in if_bool_check:
+                        bool_flag = True
+
+                if bool_flag == False:
+                    print('expresion: "{}" en if no se resuelve a booleano'.format(if_bool_check))
                 #append dummies
                 current_scope.append(current_scope[-1])
                 #if  type(eval(tree.expression().getText())) != bool:
@@ -189,6 +226,18 @@ def traverse(tree, rule_names, indent = 0):
                 current_scope.append(current_scope[-1])
 
             if 'while' in tree.getText():
+                # print('umm: ', (tree.expression().getText()))
+                while_bool_check = tree.expression().getText()
+                # print(if_bool_check)
+                # print(len(if_bool_check))
+                # check all
+                for condicion in bool_check:
+                    if condicion in while_bool_check:
+                        bool_flag = True
+
+                if bool_flag == False:
+                    print('expresion: "{}" en while no se resuelve a booleano'.format(while_bool_check))
+
                 current_scope.append(current_scope[-1])
 
             if 'return' in tree.getText():
@@ -215,16 +264,61 @@ def traverse(tree, rule_names, indent = 0):
                             print('tipo de return no coincide para metodo {} de tipo {}'.format(current_scope[-1],methods_table[current_scope[-1]]))
             #print(tree.getText())
             if tree.location() != None:
-                if (tree.location().getText(), current_scope[-1]) not in symbols_table and '.' not in tree.location().getText():
+                #check for methodcall with a type
+                #if '(' in tree.expression().getText():
+                check_for_method = tree.expression().getText()
+                if methods_table.get(check_for_method) == 'void':
+                    print('metodo {} de tipo void no puede ser llamado en asignacion'.format(tree.expression().getText()))
+
+                #regla 9
+                #print('rule9: ', tree.getText())
+                #print(tree.location().getText())
+                #print(tree.expression().getText())
+                if '[' in tree.location().getText() and '.' not in tree.location().getText():
+                    array_id = tree.location().getText()[:tree.location().getText().index('[')]
+                    array_expr = tree.location().getText()[tree.location().getText().index('[')+1:tree.location().getText().index(']')]
+                    #print('arrid: ', array_id)
+                    #print('arrexpr: ', array_expr)
+                    check_for_array = symbols_table.get((array_id, current_scope[-1]))
+                    if len(check_for_array) < 3:
+                        print('{} no es un array'.format(array_id))
+
+                    #check that arrexper is of type int
+                    check_for_int =  symbols_table.get((array_expr, current_scope[-1]))
+                    if check_for_int != None:
+                        if check_for_int[0] != 'int':
+                            print('la expresion dentro del array {} no es de tipo int'.format(array_id))
+                    else:
+                        try:
+                            int(array_expr)
+                        except:
+                            print('la expresion dentro del array {} no es un numero'.format(array_id))
+
+                if (tree.location().getText(), current_scope[-1]) not in symbols_table and '.' not in tree.location().getText() and '[' not in tree.location().getText():
                     print('variable {} referenciada antes de ser declarada en metodo {}\n'.format(tree.location().getText(), current_scope[-1]))
 
                 elif '.' in tree.location().getText():
                     pass
-                    #print('bruv: ', tree.location().getText())
+                    #print('br: ', tree.location().getText())
+
+                elif '[' in tree.location().getText():
+                    pass
 
                 else:
                     type_chek = symbols_table.get((tree.location().getText(), current_scope[-1]))
                     #print('typecheck ', type_chek[0])
+                    #print('leftvar: ', tree.location().getText())
+                    #print('rightvar: ', tree.expression().getText())
+                    leftvar = tree.location().getText()
+                    rightvar = tree.expression().getText()
+
+                    left_check = symbols_table.get((leftvar, current_scope[-1]))
+                    right_check = symbols_table.get((rightvar, current_scope[-1]))
+                    if left_check != None and right_check != None:
+                        #print(left_check)
+                        #print(right_check)
+                        if left_check[0] != right_check[0]:
+                            print('asignacion distinta en {}'.format(tree.getText()))
                     try:
                         if type_chek[0] == 'int':
                             if tree.expression().getText() != 'false' or tree.expression().getText() != 'true':
@@ -276,12 +370,56 @@ def traverse(tree, rule_names, indent = 0):
                     #print('hey: ', tree.expression().getText())
                     tree.expression().getText()
                 except:
-                    ops = ['*', '/', '%', '+', '-']
+                    #print('12: ',tree.getText())
+                    #rule 11
+                    ops = ['*', '/', '%', '+', '-', '<=', '>=', '<', '>' ]
+                    #rule 12
+                    #eq_ops = ['==', '!=']
                     strx_expr = ''
                     for indx, express in enumerate(tree.expression()):
                         #print('this one ',tree.expression()[indx].getText())
                         if any(char.isdigit() for char in tree.expression()[indx].getText()) != True and any(x in tree.expression()[indx].getText() for x in ops) != True:
-                            print('{} no es de tipo int'.format(tree.expression()[indx].getText()))
+                            if '==' not in tree.getText() and '!=' not in tree.getText() and '||' not in tree.getText() and '&&' not in tree.getText():
+                                if '||' not in tree.getText() and '&&' not in tree.getText():
+                                    #if (tree.location().getText(), current_scope[-1]) not in symbols_table:
+                                        print('{} no es de tipo int'.format(tree.expression()[indx].getText()))
+                            elif '!='  in tree.getText() or '=='  in tree.getText():
+                                arr_split = tree.getText().split('!=')
+                                if len(arr_split) == 1:
+                                    arr_split = tree.getText().split('==')
+                                #print('arrspl: ', arr_split)
+                                checkvar1 = symbols_table.get((arr_split[0], current_scope[-1]))
+                                checkvar2 = symbols_table.get((arr_split[1], current_scope[-1]))
+                                if checkvar1 != None and checkvar2 != None:
+                                    if checkvar1[0] != checkvar2[0]:
+                                        print('mismatch de tipos para {}'.format(tree.getText()))
+                            #rule 13
+                            elif '||' in tree.getText() or '&&'  in tree.getText():
+
+                                arr_split = tree.getText().split('||')
+                                if len(arr_split) == 1:
+                                    arr_split = tree.getText().split('&&')
+                                #print('dim: ', arr_split)
+                                bool_var1 = arr_split[0]
+                                bool_var2 = arr_split[1]
+                                if bool_var1  in ['true', 'false']:
+                                    bool_var1 = 'boolean'
+                                else:
+                                    bool_var1 = symbols_table.get((arr_split[0], current_scope[-1]))
+
+
+                                if bool_var2  in ['true', 'false']:
+                                    bool_var2 = 'boolean'
+                                else:
+                                    bool_var2 = symbols_table.get((arr_split[1], current_scope[-1]))
+
+
+                                if bool_var1 != bool_var2:
+                                    print('{} uno de los dos lados no es booleano'.format(tree.getText()))
+                                else:
+                                    #print(' {} vs {}'.format(bool_var1, bool_var2))
+                                    pass
+
                         #if any(x in tree.expression()[indx].getText() for x in ops):
                         #strx_expr = strx_expr + tree.expression()[indx].getText()
                         #print('wut', strx_expr)

@@ -49,7 +49,7 @@ void error()
 {
 	m.b[10] = 5;
 	b.c.a = 'c';
-	if (1) {a=4} else {m = 3};
+	if (1) {a=4} else {m = 3}
 	char c;
 	c = factorial(c);
 	return m;
@@ -68,7 +68,7 @@ int OutputInt(int n)
 {
     return 1;
 }
-}
+
 
 int InputInt()
 {return 0;}

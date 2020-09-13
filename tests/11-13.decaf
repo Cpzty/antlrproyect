@@ -6,9 +6,9 @@ class Program {
 
     int main(){
         int a;
-        if(1){a=2};
-        if(1<2){a=2};
-
+        int b;
+        a = 2*cat;
+        if(true||false){}
         return 0;
         //do comments work?
     }

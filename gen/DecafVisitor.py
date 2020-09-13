@@ -84,16 +84,6 @@ class DecafVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by DecafParser#arg1.
-    def visitArg1(self, ctx:DecafParser.Arg1Context):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by DecafParser#arg2.
-    def visitArg2(self, ctx:DecafParser.Arg2Context):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by DecafParser#arg.
     def visitArg(self, ctx:DecafParser.ArgContext):
         return self.visitChildren(ctx)

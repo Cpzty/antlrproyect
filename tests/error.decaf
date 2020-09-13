@@ -1,0 +1,23 @@
+class Program {
+
+void error()
+{
+	m.b[10] = 5;
+	b.c.a = 'c';
+	if (1) { a = 4;} else {m = 3;}
+	char c;
+	//c = factorial (c);
+	//return m;
+}
+
+
+    int main(){
+        int a;
+        a = 2*4+2;
+        //a = 2 * false;
+        1 == 2;
+        true && true;
+        return 0;
+
+    }
+}

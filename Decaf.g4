@@ -22,15 +22,16 @@ parameter: parameterType ID | parameterType ID '[' ']';
 
 parameterType: 'int' | 'char' | 'boolean';
 
-block: '{' (varDeclaration)* (statement)* '}';
+block: '{' (statement)*  '}';
 
 statement: 'if' '(' expression ')' block ('else' block)?
-         | 'while' '(' expression ')' block
-         | 'return' (expression)? ';'
-         | methodCall ';'
-         | block
-         | location '=' expression
-         | (expression)? ';'
+        | 'while' '(' expression ')' block
+        | 'return' (expression)? ';'
+        | methodCall ';'
+        | block
+        | location '=' expression
+        | (expression)? ';'
+        | varDeclaration
          ;
 
 
@@ -39,28 +40,16 @@ location: (ID | ID '[' expression ']') ('.' location)?;
 expression: location
           | methodCall
           | literal
-          |'(' expression ')'
-          //| left_num=int_literal op=('*'|'/'|'%') right_num=int_literal
-          //| left_num=int_literal op=('+'|'-') right_num=int_literal
-          //| left_num=int_literal|methodCall|ID op=('*'|'/'|'%') right_num=int_literal|methodCall|ID
-          //| left_num=int_literal|methodCall|ID op=('+'|'-') right_num=int_literal|methodCall|ID
-          | int_literal | methodCall | ID op=('*'|'/'|'%') int_literal | methodCall | ID
-          | int_literal | methodCall | ID op=('+'|'-') int_literal | methodCall | ID
-          | left_rel=int_literal|ID rel_op right_rel=int_literal|ID
-          | left_num=int_literal eq_op right_num=int_literal
-          | left_num=int_literal|location eq_op right_num=int_literal|location
-          | left_bool=bool_literal|ID eq_op right_bool=bool_literal|ID
-          | left_char=char_literal|ID eq_op right_char=char_literal|ID
-          | left_bool=bool_literal|ID cond_op right_bool=bool_literal|ID
+          | left=expression op=('*'|'/'|'%') right=expression
+          | left=expression op=('+'|'-') right=expression
+          | left=expression opcond right=expression
           | '-' expression
           | '!' expression
+          |'(' expression ')'
           ;
 
-methodCall :    ID '('  ')' | ID '(' arg1 ')' ;
+methodCall :    ID '('  ')' | ID '(' arg (',' arg)*  ')' ;
 
-arg1    :   arg2 | ;
-
-arg2    :   (arg) (',' arg)* ;
 
 arg: expression;
 
@@ -70,7 +59,7 @@ arith_op1:  '*' | '/' | '%';
 
 arith_op2: '+' | '-';
 
-opcond: rel_op | eq_op;
+opcond: rel_op | eq_op | cond_op;
 
 rel_op: '<' | '>' | '<=' | '>=';
 

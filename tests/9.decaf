@@ -7,6 +7,7 @@ class Program {
     int main(){
         int a;
         boolean b[3];
+        b[1] = false
         int c;
         return 0;
         //do comments work?

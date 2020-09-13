@@ -1,0 +1,13 @@
+class Program {
+
+    void pizza(int a){
+        return;
+    }
+
+    int main(){
+        char a;
+        boolean b;
+        a = b;
+
+    }
+}
