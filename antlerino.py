@@ -391,8 +391,24 @@ def traverse(tree, rule_names, indent = 0):
                         if any(char.isdigit() for char in tree.expression()[indx].getText()) != True and any(x in tree.expression()[indx].getText() for x in ops) != True:
                             if '==' not in tree.getText() and '!=' not in tree.getText() and '||' not in tree.getText() and '&&' not in tree.getText():
                                 if '||' not in tree.getText() and '&&' not in tree.getText():
-                                    #if (tree.location().getText(), current_scope[-1]) not in symbols_table:
+                                    #try:
+                                        #print('int problem: ', tree.expression()[indx].getText())
+                                    #except:
+                                     #   pass
+                                    if (tree.expression()[indx].getText(), current_scope[-1]) not in symbols_table and '(' not in tree.expression()[indx].getText():
                                         print('{} no es de tipo int'.format(tree.expression()[indx].getText()))
+
+                                    elif '(' in tree.expression()[indx].getText():
+                                        method_name = tree.expression()[indx].getText()[:-2]
+                                        print(methods_table)
+                                        gettem_method = methods_table.get(method_name)
+                                        print('methType: ', gettem_method)
+                                        if gettem_method == None:
+                                            print('metodo {} aun no se ha declarado'.format(method_name))
+                                        elif gettem_method != None:
+                                            if gettem_method != 'int':
+                                                print('metodo {} no es de tipo int'.format(method_name))
+
                             elif '!='  in tree.getText() or '=='  in tree.getText():
                                 arr_split = tree.getText().split('!=')
                                 if len(arr_split) == 1:

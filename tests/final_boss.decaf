@@ -12,6 +12,10 @@ struct B
 	struct A c;
 }
 
+int ReturnNumber()
+{return z.a;}
+
+
 struct A y;
 struct A z;
 struct B m;
@@ -71,7 +75,5 @@ void OutputInt(int n)
 int InputInt()
 {return 0;}
 
-int ReturnNumber()
-{return z.a;}
 
 }
