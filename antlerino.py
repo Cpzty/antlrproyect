@@ -5,7 +5,10 @@ from antlr4.tree.Trees import Trees
 from copy import deepcopy
 from lark.tree import pydot__tree_to_png
 
-sys.path.insert(0, "D:/Documents/ultimo semestre/compiladores 2.0/antler project/gen")
+#remember to reinsert path on laptop
+#sys.path.insert(0, "D:/Documents/ultimo semestre/compiladores 2.0/antler project/gen")
+sys.path.insert(0, "C:/Users/Usuario/Documents/Cris/compis2/antlrproyect/gen")
+
 
 from DecafLexer import DecafLexer
 from DecafListener import DecafListener
@@ -35,6 +38,7 @@ class ImpListener(DecafListener):
         offset[0] = 0
 
     def enterStructDeclaration(self, ctx):
+        #methods_table[ctx.ID().getText()] = 'struct'
         offset[0] = 0
 
     def exitStructDeclaration(self, ctx):
@@ -156,6 +160,11 @@ def traverse(tree, rule_names, indent = 0):
                 remove_struct = tree.varType().getText()
                 if 'struct' in remove_struct:
                     remove_struct = remove_struct[-1]
+
+                    if remove_struct not in methods_table:
+                        #print('run: ', methods_table)
+                        print('variable {} utiliza struct {} no existente en metodo {}'.format(tree.ID().getText(), remove_struct, current_scope[-1]))
+
                 if (tree.NUM()) == None:
                     symbols_table[tree.ID().getText(), current_scope[-1]] = [remove_struct, offset[0]]
 
@@ -195,6 +204,7 @@ def traverse(tree, rule_names, indent = 0):
             #push the id as scope
             #print('oh nyo: ', tree.ID().getText())
             current_scope.append(tree.ID().getText())
+            methods_table[tree.ID().getText()] = 'struct'
             #for var in tree.varDeclaration():
                 #print(var.getText())
 

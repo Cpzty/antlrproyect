@@ -1,0 +1,16 @@
+class Program {
+
+    struct A
+    {
+	    int a;
+    }
+
+    struct A y;
+
+
+    int main(){
+
+        return 0;
+        //do comments work?
+    }
+}
