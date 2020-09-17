@@ -21,6 +21,7 @@ methods_table = dict()
 symbols_table = dict()
 types_table = dict()
 params_table = dict()
+structs_table = dict()
 #valores iniciales establecidos
 types_table['int'] = 4
 types_table['boolean'] = 1
@@ -80,6 +81,11 @@ def traverse(tree, rule_names, indent = 0):
     elif isinstance(tree, TerminalNodeImpl):
         #print("{0}TOKEN='{1} '".format("  " * indent, tree.getText()))
         if tree.getText() == '}':
+            #if in struct save struct length
+            if methods_table.get(current_scope[-1]) == 'struct':
+                #print('offset: ', offset[0])
+                structs_table[current_scope[-1]] = offset[0]
+
             #pop scope
             current_scope.pop()
             offset[0] = 0
@@ -400,9 +406,9 @@ def traverse(tree, rule_names, indent = 0):
 
                                     elif '(' in tree.expression()[indx].getText():
                                         method_name = tree.expression()[indx].getText()[:-2]
-                                        print(methods_table)
+                                        #print(methods_table)
                                         gettem_method = methods_table.get(method_name)
-                                        print('methType: ', gettem_method)
+                                        #print('methType: ', gettem_method)
                                         if gettem_method == None:
                                             print('metodo {} aun no se ha declarado'.format(method_name))
                                         elif gettem_method != None:

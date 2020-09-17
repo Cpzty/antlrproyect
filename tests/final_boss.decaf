@@ -10,6 +10,7 @@ struct B
 {
 	int b[5];
 	struct A c;
+	//this offset needs to be calculated still
 }
 
 int ReturnNumber()
