@@ -39,8 +39,8 @@ class MyTableWidget(QWidget):
         stream = os.popen(command)
         output = stream.readlines()
         msg_outp = ''
-        msg_tables = output[-3] + output[-2] + output[-1]
-        for i in range(len(output)-3):
+        msg_tables = output[-4] + output[-3] + output[-2] + output[-1]
+        for i in range(len(output)-4):
             msg_outp = msg_outp + output[i]
         self.ErrorMessages.setText(msg_outp)
         self.TableMessages.setText(msg_tables)

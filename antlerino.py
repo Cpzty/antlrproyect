@@ -21,7 +21,10 @@ methods_table = dict()
 symbols_table = dict()
 types_table = dict()
 params_table = dict()
+
+#save offset for structs
 structs_table = dict()
+
 #valores iniciales establecidos
 types_table['int'] = 4
 types_table['boolean'] = 1
@@ -169,7 +172,14 @@ def traverse(tree, rule_names, indent = 0):
 
                     if remove_struct not in methods_table:
                         #print('run: ', methods_table)
+
                         print('variable {} utiliza struct {} no existente en metodo {}'.format(tree.ID().getText(), remove_struct, current_scope[-1]))
+                    else:
+                        #print('remstruct: ', remove_struct)
+                        struct_offset = structs_table.get(remove_struct)
+                        offset[0] = struct_offset
+                        #symbols_table[tree.ID().getText(), current_scope[-1]] = [remove_struct, struct_offset]
+
 
                 if (tree.NUM()) == None:
                     symbols_table[tree.ID().getText(), current_scope[-1]] = [remove_struct, offset[0]]
@@ -475,5 +485,6 @@ parse(sys.argv)
 print('resulting params table: ', params_table)
 print('resulting method table: ', methods_table)
 print('resulting symbols table: ', symbols_table)
+print('resulting structs table: ', structs_table)
 if 'main' not in methods_table:
     print('metodo main faltante')

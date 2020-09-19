@@ -5,8 +5,18 @@ class Program {
 	    int a;
     }
 
+    struct B
+    {
+        int b[5];
+        struct A c;
+
+    }
+
     struct A y;
 
+    int a;
+
+    struct B x;
 
     int main(){
 
