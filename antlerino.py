@@ -63,6 +63,7 @@ def parse(argv):
         tree = parser.program() #start from the parser rule, however should be changed to your entry rule for your specific grammar
         #pydot__tree_to_png(tree, "./tree.png")
         traverse(tree, parser.ruleNames)
+        traverse_intermediate_code(tree, parser.ruleNames)
         f = open('treegen.txt', 'w')
         f.write((Trees.toStringTree(tree, None, parser)))
 
@@ -76,6 +77,21 @@ def parse(argv):
         #print(walker)
     else:
         print('Error : Expected a valid file')
+
+
+def traverse_intermediate_code(tree, rule_names, indent = 0):
+
+    if tree.getText() == "<EOF>":
+        return
+    elif isinstance(tree, TerminalNodeImpl):
+        #print("{0}TOKEN='{1}'".format("  " * indent, tree.getText()))
+        pass
+    else:
+        #print("{0}{1}".format("  " * indent, rule_names[tree.getRuleIndex()]))
+        if rule_names[tree.getRuleIndex()] == 'varDeclaration':
+            pass
+        for child in tree.children:
+            traverse_intermediate_code(child, rule_names, indent + 1)
 
 def traverse(tree, rule_names, indent = 0):
 
@@ -480,6 +496,7 @@ def traverse(tree, rule_names, indent = 0):
             traverse(child, rule_names, indent + 1)
 
 
+
 parse(sys.argv)
 
 print('resulting params table: ', params_table)
@@ -488,3 +505,5 @@ print('resulting symbols table: ', symbols_table)
 print('resulting structs table: ', structs_table)
 if 'main' not in methods_table:
     print('metodo main faltante')
+
+
