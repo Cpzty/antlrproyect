@@ -1,0 +1,13 @@
+class Program {
+
+    int factorialRecursivo(int n){
+        int empty;
+        if(n==1){ return n; }
+        if(n<1){ return empty; }
+        else{ return n*factorialRecursivo(n-1); }
+    }
+
+    int main(){
+
+    }
+}

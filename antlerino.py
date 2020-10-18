@@ -263,6 +263,7 @@ def traverse_intermediate_code(tree, rule_names, indent = 0):
         #print("{0}{1}".format("  " * indent, rule_names[tree.getRuleIndex()]))
         if rule_names[tree.getRuleIndex()] == 'statement':
             if tree.location() != None:
+                #print('woop woop: ', tree.expression().getText())
                 cadena = tree.expression().getText()
                 #print('cadena: ', cadena)
                 pofix = Conversion(len(cadena))
@@ -312,6 +313,7 @@ def traverse_intermediate_code(tree, rule_names, indent = 0):
                     Label0 = etiquetas.create_node()
                     Label1 = etiquetas.create_node()
                     #####
+                    #print('hey there we eat pizza: ',list(tree.expression().getText()))
                     new_temp.assign_op(tree.expression().getText())
                     new_condition = 'ifZ ' + new_temp.data + ' Goto ' + Label0.data
                     line2 = tree.block()[0].getText()[1:-1]
@@ -334,9 +336,42 @@ def traverse_intermediate_code(tree, rule_names, indent = 0):
                 Label0 = etiquetas.create_node()
                 Label1 = etiquetas.create_node()
                 ###
-                new_temp.assign_op(tree.expression().getText())
+                chain_convert = tree.expression().getText()
+                if '<=' in chain_convert:
+                    chain_convert = chain_convert.replace('<=', ' ')
+                    chain_convert = chain_convert.split(' ')
+                    for indx, item in enumerate(chain_convert):
+                        # print(current_scope_intermediate_code)
+                        replace_var_inscope = symbols_table.get((item, current_scope_intermediate_code[-1]), '')
+                        replace_var_inglobal = symbols_table.get((item, 'global'), '')
+                        if replace_var_inscope != '':
+                            chain_convert[indx] = 'fp[' + str(list(symbols_table.keys()).index((item, current_scope_intermediate_code[-1]))) + ']'
+                        elif replace_var_inglobal != '':
+                            chain_convert[indx] = 'gp[' + str(list(symbols_table.keys()).index((item, 'global'))) + ']'
+                    chain_convert.insert(1, '<=')
+                    #print(chain_convert)
+                    chain_join = ''
+                    chain_join = chain_join.join(chain_convert)
+                    #print(chain_join)
+                ###
+                new_temp.assign_op(chain_join)
                 new_condition = 'ifZ ' + new_temp.data + ' Goto ' + Label1.data
-                line3 = tree.block()[0].getText()[1:-1]
+                #done with only 1 var len
+                l3chain = list(tree.block()[0].getText()[1:-1])
+                for indx, item in enumerate(l3chain):
+                    # print(current_scope_intermediate_code)
+                    replace_var_inscope = symbols_table.get((item, current_scope_intermediate_code[-1]), '')
+                    replace_var_inglobal = symbols_table.get((item, 'global'), '')
+                    if replace_var_inscope != '':
+                        l3chain[indx] = 'fp[' + str(
+                            list(symbols_table.keys()).index((item, current_scope_intermediate_code[-1]))) + ']'
+                    elif replace_var_inglobal != '':
+                        l3chain[indx] = 'gp[' + str(list(symbols_table.keys()).index((item, 'global'))) + ']'
+                l3join = ''
+                l3join = l3join.join(l3chain)
+                #print('l3: ', l3chain)
+
+                line3 = l3join
                 line4 = 'Goto ' + Label0.data
                 bloque_codigo_intermedio.append(Label0.data)
                 bloque_codigo_intermedio.append(new_temp.value)
@@ -765,18 +800,6 @@ def traverse(tree, rule_names, indent = 0):
 
 parse(sys.argv)
 
-print('resulting params table: ', params_table)
-print('resulting method table: ', methods_table)
-print('resulting symbols table: ', symbols_table)
-print('resulting structs table: ', structs_table)
-if 'main' not in methods_table:
-    print('metodo main faltante')
-
-for key in methods_table.keys():
-    labels.append('Function ' + key + ':')
-
-print('labels: ', labels)
-#temporales.see_tree()
 bloque_codigo_intermedio.append('end func main')
 #for block in bloque_codigo_intermedio:
  #   try:
@@ -816,3 +839,17 @@ for block in bloque_codigo_intermedio:
                 print('end func ' + bloque_codigo_intermedio[bloque_codigo_intermedio.index(block)].split()[-1][:-1])
         except:
             pass
+
+
+print('resulting params table: ', params_table)
+print('resulting method table: ', methods_table)
+print('resulting symbols table: ', symbols_table)
+print('resulting structs table: ', structs_table)
+if 'main' not in methods_table:
+    print('metodo main faltante')
+
+for key in methods_table.keys():
+    labels.append('Function ' + key + ':')
+
+#print('labels: ', labels)
+#temporales.see_tree()

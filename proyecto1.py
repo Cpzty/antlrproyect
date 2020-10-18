@@ -39,12 +39,18 @@ class MyTableWidget(QWidget):
         stream = os.popen(command)
         output = stream.readlines()
         msg_outp = ''
+        intermediate_outp = ''
+        app_inter = False
         msg_tables = output[-4] + output[-3] + output[-2] + output[-1]
         for i in range(len(output)-4):
-            msg_outp = msg_outp + output[i]
+            if app_inter == True or 'begin func' in output[i]:
+                app_inter = True
+                intermediate_outp = intermediate_outp + output[i]
+            else:
+                msg_outp = msg_outp + output[i]
         self.ErrorMessages.setText(msg_outp)
         self.TableMessages.setText(msg_tables)
-
+        self.IntermediateMessages.setText((intermediate_outp))
 
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
@@ -55,20 +61,22 @@ class MyTableWidget(QWidget):
         self.tab1 = QWidget()
         self.tab2 = QWidget()
         self.tab3 = QWidget()
+        self.tab4 = QWidget()
         self.tabs.resize(300, 200)
 
         # Add tabs
         self.tabs.addTab(self.tab1, "Editor")
         self.tabs.addTab(self.tab2, "Mensajes")
         self.tabs.addTab(self.tab3, "Tablas")
-
+        self.tabs.addTab(self.tab4, "Código Intermedio")
         # Create first tab
         self.tab1.layout = QVBoxLayout(self)
         self.tab2.layout = QVBoxLayout(self)
         self.tab3.layout = QVBoxLayout(self)
-
+        self.tab4.layout = QVBoxLayout(self)
         self.tab2.layout.setAlignment(Qt.AlignTop)
         self.tab3.layout.setAlignment(Qt.AlignTop)
+        self.tab4.layout.setAlignment(Qt.AlignTop)
 
         self.TextEditor = QPlainTextEdit(self)
         self.TextEditor.resize(100, 100)
@@ -82,7 +90,11 @@ class MyTableWidget(QWidget):
         #Elements for 2nd tab
         self.ErrorMessages = QLabel(self)
         self.TableMessages = QLabel(self)
+        self.IntermediateMessages = QLabel(self)
         self.ErrorMessages.setFont(QFont('Arial', 14))
+        self.TableMessages.setFont(QFont('Arial', 14))
+        self.IntermediateMessages.setFont(QFont('Arial', 14))
+
         #Add to tab1
         self.tab1.layout.addWidget(self.TextEditor)
         self.tab1.layout.addWidget(self.uploadBtn)
@@ -96,6 +108,10 @@ class MyTableWidget(QWidget):
         #Add to tab3
         self.tab3.layout.addWidget(self.TableMessages)
         self.tab3.setLayout(self.tab3.layout)
+
+        #Add to tab 4
+        self.tab4.layout.addWidget(self.IntermediateMessages)
+        self.tab4.setLayout(self.tab4.layout)
 
         # Add tabs to widget
         self.layout.addWidget(self.tabs)

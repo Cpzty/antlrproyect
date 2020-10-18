@@ -14,8 +14,6 @@ class Program {
         //while(a>b){a=a*2}
         a = a*b
         b = a*b
-        c = a*b
-        d = a*c
-        a = a*c
+
     }
 }

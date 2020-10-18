@@ -1,0 +1,18 @@
+class Program {
+
+    void ToBinary(int num){
+    if(num>1){ ToBinary(num/2); }
+    printint(num % 2);
+
+    }
+
+    int main(){
+
+        int val;
+        val = 16;
+        ToBinary(val);
+
+        return 0;
+
+    }
+}
