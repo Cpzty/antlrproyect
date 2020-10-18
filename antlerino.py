@@ -5,14 +5,103 @@ from antlr4.tree.Trees import Trees
 from copy import deepcopy
 from lark.tree import pydot__tree_to_png
 
-#remember to reinsert path on laptop
-#sys.path.insert(0, "D:/Documents/ultimo semestre/compiladores 2.0/antler project/gen")
-sys.path.insert(0, "C:/Users/Usuario/Documents/Cris/compis2/antlrproyect/gen")
+sys.path.insert(0, "D:/Documents/ultimo semestre/compiladores 2.0/antler project/gen")
+#sys.path.insert(0, "C:/Users/Usuario/Documents/Cris/compis2/antlrproyect/gen")
 
 
 from DecafLexer import DecafLexer
 from DecafListener import DecafListener
 from DecafParser import DecafParser
+
+
+class Conversion:
+
+    # Constructor to initialize the class variables
+    def __init__(self, capacity):
+        self.top = -1
+        self.capacity = capacity
+        # This array is used a stack
+        self.array = []
+        # Precedence setting
+        self.output = []
+        self.precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}
+
+        # check if the stack is empty
+
+    def isEmpty(self):
+        return True if self.top == -1 else False
+
+    # Return the value of the top of the stack
+    def peek(self):
+        return self.array[-1]
+
+        # Pop the element from the stack
+
+    def pop(self):
+        if not self.isEmpty():
+            self.top -= 1
+            return self.array.pop()
+        else:
+            return "$"
+
+    # Push the element to the stack
+    def push(self, op):
+        self.top += 1
+        self.array.append(op)
+
+        # A utility function to check is the given character
+
+    # is operand
+    def isOperand(self, ch):
+        return ch.isalpha()
+
+        # Check if the precedence of operator is strictly
+
+    # less than top of stack or not
+    def notGreater(self, i):
+        try:
+            a = self.precedence[i]
+            b = self.precedence[self.peek()]
+            return True if a <= b else False
+        except KeyError:
+            return False
+
+    # The main function that converts given infix expression
+    # to postfix expression
+    def infixToPostfix(self, exp):
+
+        # Iterate over the expression for conversion
+        for i in exp:
+            # If the character is an operand,
+            # add it to output
+            if self.isOperand(i):
+                self.output.append(i)
+
+                # If the character is an '(', push it to stack
+            elif i == '(':
+                self.push(i)
+
+                # If the scanned character is an ')', pop and
+            # output from the stack until and '(' is found
+            elif i == ')':
+                while ((not self.isEmpty()) and self.peek() != '('):
+                    a = self.pop()
+                    self.output.append(a)
+                if (not self.isEmpty() and self.peek() != '('):
+                    return -1
+                else:
+                    self.pop()
+
+                    # An operator is encountered
+            else:
+                while (not self.isEmpty() and self.notGreater(i)):
+                    self.output.append(self.pop())
+                self.push(i)
+
+                # pop all the operator from the stack
+        while not self.isEmpty():
+            self.output.append(self.pop())
+
 
 current_scope = ['global']
 offset = [0]
@@ -30,9 +119,72 @@ types_table['int'] = 4
 types_table['boolean'] = 1
 types_table['char'] = 1
 
+
+
+###
+#proyecto2
+###
+labels = []
+#temporales = []
+op_solve = []
+validar_ops = []
+#bloque donde se construye codigo intermedio
+bloque_codigo_intermedio = []
+current_scope_intermediate_code = ['global']
+
+class Node():
+    def __init__(self):
+        self.data = ''
+        self.value = None
+
+    def assign_op(self, ops):
+        self.value = self.data + ' = ' + ops
+
+class Temps():
+    def __init__(self):
+        self.nodes = []
+        self.current_node = 0
+    def create_node(self):
+        some_node = Node()
+        #if self.current_node >= 3:
+         #   self.current_node = 0
+        some_node.data = 't' + str(self.current_node)
+        self.current_node += 1
+        return some_node
+
+
+    def see_tree(self):
+        for nod in self.nodes:
+            #print('data: ', nod.data)
+            print('value: ', nod.value)
+
+
+temporales = Temps()
+
+
+class Etiquetas():
+    def __init__(self):
+        self.nodes = []
+        self.current_node = 0
+    def create_node(self):
+        some_node = Node()
+        some_node.data = 'L' + str(self.current_node)
+        self.current_node += 1
+        return some_node
+
+
+    def see_tree(self):
+        for nod in self.nodes:
+            #print('data: ', nod.data)
+            print('value: ', nod.value)
+
+etiquetas = Etiquetas()
+
+
 class ImpListener(DecafListener):
     def enterMethodDeclaration(self, ctx):
         offset[0] = 0
+
         #current_scope.clear()
         #methods_table.append(ctx.methodType().getText())
         #set scope remove at exitMethod
@@ -40,6 +192,7 @@ class ImpListener(DecafListener):
         #print(methods_table)
     def exitMethodDeclaration(self, ctx):
         offset[0] = 0
+        #bloque_codigo_intermedio.append('end func ' + ctx.ID().getText())
 
     def enterStructDeclaration(self, ctx):
         #methods_table[ctx.ID().getText()] = 'struct'
@@ -48,7 +201,25 @@ class ImpListener(DecafListener):
     def exitStructDeclaration(self, ctx):
         offset[0] = 0
 
-        #print()
+
+
+    #def exitExpression(self, ctx):
+        #print(ctx.getText())
+     #   op_solve.append(ctx.getText())
+      #  if len(op_solve[-1]) == 3:
+       #     r1 =temporales.create_node()
+        ##   temporales.nodes.append(r1)
+
+        #pass
+        #if ctx.left != None:
+         #   print('left: ',ctx.left.getText())
+        #if ctx.op != None:
+         #   print(ctx.op.text)
+        #if ctx.right != None:
+         #   print('right: ',ctx.right.getText())
+
+
+
 
 def parse(argv):
     if len(sys.argv) > 1:
@@ -62,8 +233,10 @@ def parse(argv):
         parser = DecafParser(stream)
         tree = parser.program() #start from the parser rule, however should be changed to your entry rule for your specific grammar
         #pydot__tree_to_png(tree, "./tree.png")
+
         traverse(tree, parser.ruleNames)
         traverse_intermediate_code(tree, parser.ruleNames)
+
         f = open('treegen.txt', 'w')
         f.write((Trees.toStringTree(tree, None, parser)))
 
@@ -73,7 +246,6 @@ def parse(argv):
         walker = ParseTreeWalker()
         walker.walk(printer, tree)
 
-        #printer.enterVarDeclaration()
         #print(walker)
     else:
         print('Error : Expected a valid file')
@@ -85,14 +257,108 @@ def traverse_intermediate_code(tree, rule_names, indent = 0):
         return
     elif isinstance(tree, TerminalNodeImpl):
         #print("{0}TOKEN='{1}'".format("  " * indent, tree.getText()))
+        #current_scope_intermediate_code.pop()
         pass
     else:
         #print("{0}{1}".format("  " * indent, rule_names[tree.getRuleIndex()]))
-        if rule_names[tree.getRuleIndex()] == 'varDeclaration':
-            pass
+        if rule_names[tree.getRuleIndex()] == 'statement':
+            if tree.location() != None:
+                cadena = tree.expression().getText()
+                #print('cadena: ', cadena)
+                pofix = Conversion(len(cadena))
+                pofix.infixToPostfix(cadena)
+                cadena = pofix.output
+                #remplazar variables en cadena
+                for indx, item in enumerate(cadena):
+                    #print(current_scope_intermediate_code)
+                    replace_var_inscope = symbols_table.get((item, current_scope_intermediate_code[-1]),'')
+                    replace_var_inglobal = symbols_table.get((item, 'global'),'')
+                    if replace_var_inscope != '':
+                        cadena[indx] = 'fp[' + str(list(symbols_table.keys()).index((item, current_scope_intermediate_code[-1]))) + ']'
+                    elif replace_var_inglobal != '':
+                        cadena[indx] = 'gp[' + str(list(symbols_table.keys()).index((item, 'global'))) + ']'
+
+                operaciones = ['*', '/', '%', '+', '-']
+                for indx, operand in enumerate(cadena):
+
+                    if operand in operaciones:
+
+                        if cadena[indx-1] not in operaciones and cadena[indx-2] not in operaciones:
+                            new_temp = temporales.create_node()
+                            new_temp.assign_op(cadena[indx-2] + operand + cadena[indx-1])
+                            temporales.nodes.append(new_temp)
+                            #print(new_temp.value)
+                        elif cadena[indx-1] in operaciones:
+                            new_temp = temporales.create_node()
+                            new_temp.assign_op(temporales.nodes[-2].data + operand + temporales.nodes[-1].data)
+                            #print(new_temp.value)
+                            temporales.nodes.append(new_temp)
+                        #si el anterior no es operacion pero el 2do si entonces anterior + label
+                        else:
+                            new_temp = temporales.create_node()
+                            new_temp.assign_op(temporales.nodes[-1].data + operand + cadena[indx-1])
+                            temporales.nodes.append(new_temp)
+                for node in temporales.nodes:
+                    bloque_codigo_intermedio.append(deepcopy(node))
+                temporales.nodes.clear()
+
+            elif 'if' in tree.getText():
+                current_scope_intermediate_code.append(current_scope_intermediate_code[-1])
+                if 'else' in tree.getText():
+                    current_scope_intermediate_code.append(current_scope_intermediate_code[-1])
+
+                    #inicializar
+                    new_temp = temporales.create_node()
+                    Label0 = etiquetas.create_node()
+                    Label1 = etiquetas.create_node()
+                    #####
+                    new_temp.assign_op(tree.expression().getText())
+                    new_condition = 'ifZ ' + new_temp.data + ' Goto ' + Label0.data
+                    line2 = tree.block()[0].getText()[1:-1]
+                    line3 = 'Goto ' + Label1.data
+                    Label0.value = tree.block()[1].getText()[1:-1]
+                    #print('l0: ', Label0.value)
+                    #temporales.nodes.append(new_temp)
+                    #etiquetas.nodes.append(Label0)
+                    #etiquetas.nodes.append(Label1)
+                    bloque_codigo_intermedio.append(new_temp.value)
+                    bloque_codigo_intermedio.append(new_condition)
+                    bloque_codigo_intermedio.append(line2)
+                    bloque_codigo_intermedio.append(line3)
+                    bloque_codigo_intermedio.append(Label0.value)
+                    bloque_codigo_intermedio.append('endIF')
+
+            elif 'while' in tree.getText():
+                current_scope_intermediate_code.append(current_scope_intermediate_code[-1])
+                new_temp = temporales.create_node()
+                Label0 = etiquetas.create_node()
+                Label1 = etiquetas.create_node()
+                ###
+                new_temp.assign_op(tree.expression().getText())
+                new_condition = 'ifZ ' + new_temp.data + ' Goto ' + Label1.data
+                line3 = tree.block()[0].getText()[1:-1]
+                line4 = 'Goto ' + Label0.data
+                bloque_codigo_intermedio.append(Label0.data)
+                bloque_codigo_intermedio.append(new_temp.value)
+                bloque_codigo_intermedio.append(new_condition)
+                bloque_codigo_intermedio.append(line3)
+                bloque_codigo_intermedio.append(line4)
+                bloque_codigo_intermedio.append('endWhile')
+
+        elif rule_names[tree.getRuleIndex()] == 'methodDeclaration' or rule_names[tree.getRuleIndex()] == 'struct':
+            bloque_codigo_intermedio.append('begin func ' + tree.ID().getText()+ ':')
+
+        if rule_names[tree.getRuleIndex()] == 'methodDeclaration':
+            current_scope_intermediate_code.append(tree.ID().getText())
+
+
+            #print(line2)
         for child in tree.children:
             traverse_intermediate_code(child, rule_names, indent + 1)
 
+
+
+#proyecto1
 def traverse(tree, rule_names, indent = 0):
 
     if tree.getText() == "<EOF>":
@@ -506,4 +772,47 @@ print('resulting structs table: ', structs_table)
 if 'main' not in methods_table:
     print('metodo main faltante')
 
+for key in methods_table.keys():
+    labels.append('Function ' + key + ':')
 
+print('labels: ', labels)
+#temporales.see_tree()
+bloque_codigo_intermedio.append('end func main')
+#for block in bloque_codigo_intermedio:
+ #   try:
+  #      print(block.value)
+   # except:
+    #    try:
+     #       print(block)
+      #      if 'func' in bloque_codigo_intermedio[bloque_codigo_intermedio.index(block) + 1] and \
+       #             bloque_codigo_intermedio[
+        #                bloque_codigo_intermedio.index(block) + 1] != 'end func main':
+         #       print('end func ' + bloque_codigo_intermedio[bloque_codigo_intermedio.index(block)].split()[-1][:-1])
+        #except:
+         #   pass
+    #print('\n')
+
+for block in bloque_codigo_intermedio:
+    try:
+        block.value
+        if 't' not in bloque_codigo_intermedio[bloque_codigo_intermedio.index(block)-1].value[5:]:
+            reutilizar = bloque_codigo_intermedio[bloque_codigo_intermedio.index(block)-1].value[5:]
+            actual_reutilizar = bloque_codigo_intermedio[bloque_codigo_intermedio.index(block)-1].value[:2]
+        if block.value[5:] == reutilizar:
+            block.value = block.value[:5] + actual_reutilizar
+    except:
+        pass
+
+#print again
+for block in bloque_codigo_intermedio:
+    try:
+        print(block.value)
+    except:
+        try:
+            print(block)
+            if 'func' in bloque_codigo_intermedio[bloque_codigo_intermedio.index(block) + 1] and \
+                    bloque_codigo_intermedio[
+                        bloque_codigo_intermedio.index(block) + 1] != 'end func main':
+                print('end func ' + bloque_codigo_intermedio[bloque_codigo_intermedio.index(block)].split()[-1][:-1])
+        except:
+            pass

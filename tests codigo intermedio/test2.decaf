@@ -1,0 +1,21 @@
+class Program {
+
+    void pizza(){
+    int a;
+    a = 1*a+2+3
+    }
+
+    int main(){
+        int a;
+        int b;
+        int c;
+        int d;
+        //if(a==b){c=1} else{c=2}
+        //while(a>b){a=a*2}
+        a = a*b
+        b = a*b
+        c = a*b
+        d = a*c
+        a = a*c
+    }
+}

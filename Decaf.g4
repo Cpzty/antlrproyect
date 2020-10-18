@@ -40,13 +40,15 @@ location: (ID | ID '[' expression ']') ('.' location)?;
 expression: location
           | methodCall
           | literal
-          | left=expression op=('*'|'/'|'%') right=expression
-          | left=expression op=('+'|'-') right=expression
+          | left=expression arith_op1 right=expression
+          | left=expression arith_op2 right=expression
           | left=expression opcond right=expression
           | '-' expression
           | '!' expression
           |'(' expression ')'
           ;
+
+
 
 methodCall :    ID '('  ')' | ID '(' arg (',' arg)*  ')' ;
 
@@ -74,6 +76,7 @@ int_literal: NUM;
 char_literal: '"' CHAR '"';
 
 bool_literal: 'true' | 'false';
+
 
 COMMENT:  '//' ~( '\r' | '\n' )* ->channel(HIDDEN);
 ID: ([a-zA-Z] [a-zA-Z0-9]*);
