@@ -1,0 +1,113 @@
+atoi: 
+    push    ebx 
+    push    ecx
+    push    edx
+    push    esi
+    mov     esi, eax
+    mov     eax, 0
+    mov     ecx, 0
+.multiplyLoop: 
+    xor     ebx, ebx
+    mov     bl, [esi+ecx]
+    cmp     bl, 48
+    jl      .finished
+    cmp     bl, 57
+    jg      .finished
+    sub     bl, 48
+    add     eax, ebx
+    mov     ebx, 10
+    mul     ebx
+    inc     ecx
+    jmp     .multiplyLoop
+.finished:
+    cmp     ecx, 0
+    je      .restore
+    mov     ebx, 10
+    div     ebx
+.restore:
+    pop     esi
+    pop     edx
+    pop     ecx
+    pop     ebx
+    ret
+sprintLF:
+    call    sprint
+    push    eax
+    mov     eax, 0Ah
+    push    eax
+    mov     eax, esp
+    call    sprint
+    pop     eax
+    pop     eax
+    ret
+sprint:
+    push    edx
+    push    ecx
+    push    ebx
+    push    eax
+    call    slen
+    mov     edx, eax
+    pop     eax
+    mov     ecx, eax
+    mov     ebx, 1
+    mov     eax, 4
+    int     80h
+    pop     ebx
+    pop     ecx
+    pop     edx
+    ret
+slen:
+    push    ebx
+    mov     ebx, eax
+nextchar:
+    cmp     byte [eax], 0
+    jz      finished
+    inc     eax
+    jmp     nextchar
+finished:
+    sub     eax, ebx
+    pop     ebx
+    ret
+quit:
+    mov     ebx, 0
+    mov     eax, 1
+    int     80h
+    ret
+ackermann:
+    cmp eax, 0
+    je ack1
+    cmp ebx, 0
+    je ack2
+    cmp edx, 1
+    je ack3
+    dec ebx
+    mov edx, 1
+    jmp ackermann
+ack1:
+    inc ebx
+    mov     ecx, ebx
+    add     ecx, 48
+    push    ecx
+    mov     ecx, esp
+    call    sprintLF
+    pop ecx
+    ret
+ack2:
+    dec eax    ;m-1
+    mov ebx, 1 ;convertir n a 1
+    call ackermann
+ack3: 
+mov edx, 0
+dec eax
+call ackermann
+SECTION .text
+global _start
+_start:
+    mov eax, 0
+    mov ebx, 0
+    call ackermann
+call quit
+SECTION .data
+msg1        db      'Ingresar cantidad de llamadas: ', 0h
+SECTION .bss
+sinput:   resb 255

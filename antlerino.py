@@ -853,3 +853,200 @@ for key in methods_table.keys():
 
 #print('labels: ', labels)
 #temporales.see_tree()
+
+nasm_build = []
+
+#funciones
+#
+#ascii to integer function
+sprintflf = "sprintLF:\n" \
+            "    call    sprint\n" \
+            "    push    eax\n" \
+            "    mov     eax, 0Ah\n" \
+            "    push    eax\n" \
+            "    mov     eax, esp\n" \
+            "    call    sprint\n" \
+            "    pop     eax\n" \
+            "    pop     eax\n" \
+            "    ret"
+
+sprint = "sprint:\n" \
+         "    push    edx\n" \
+         "    push    ecx\n" \
+         "    push    ebx\n" \
+         "    push    eax\n" \
+         "    call    slen\n" \
+         "    mov     edx, eax\n" \
+         "    pop     eax\n" \
+         "    mov     ecx, eax\n" \
+         "    mov     ebx, 1\n" \
+         "    mov     eax, 4\n" \
+         "    int     80h\n" \
+         "    pop     ebx\n" \
+         "    pop     ecx\n" \
+         "    pop     edx\n" \
+         "    ret"
+
+slen = "slen:\n" \
+       "    push    ebx\n" \
+       "    mov     ebx, eax"
+
+nextchar = "nextchar:\n" \
+           "    cmp     byte [eax], 0\n" \
+           "    jz      finished\n" \
+           "    inc     eax\n" \
+           "    jmp     nextchar"
+
+finished = "finished:\n" \
+           "    sub     eax, ebx\n" \
+           "    pop     ebx\n" \
+           "    ret"
+
+
+atoi = "atoi: \n" \
+       "    push    ebx \n" \
+       "    push    ecx\n" \
+       "    push    edx\n" \
+       "    push    esi\n" \
+       "    mov     esi, eax\n" \
+       "    mov     eax, 0\n" \
+       "    mov     ecx, 0\n" \
+       ".multiplyLoop: \n" \
+       "    xor     ebx, ebx\n" \
+       "    mov     bl, [esi+ecx]\n" \
+       "    cmp     bl, 48\n" \
+       "    jl      .finished\n" \
+       "    cmp     bl, 57\n" \
+       "    jg      .finished\n" \
+       "    sub     bl, 48\n" \
+       "    add     eax, ebx\n" \
+       "    mov     ebx, 10\n" \
+       "    mul     ebx\n" \
+       "    inc     ecx\n" \
+       "    jmp     .multiplyLoop\n" \
+       ".finished:\n" \
+       "    cmp     ecx, 0\n" \
+       "    je      .restore\n" \
+       "    mov     ebx, 10\n" \
+       "    div     ebx\n" \
+       ".restore:\n" \
+       "    pop     esi\n" \
+       "    pop     edx\n" \
+       "    pop     ecx\n" \
+       "    pop     ebx\n" \
+       "    ret"
+
+
+ack1 = "ack1:\n" \
+       "    inc ebx\n" \
+       "    mov     ecx, ebx\n" \
+       "    add     ecx, 48\n" \
+       "    push    ecx\n" \
+       "    mov     ecx, esp\n" \
+       "    call    sprintLF\n" \
+       "    pop ecx\n" \
+       "    ret"
+
+ack2 = "ack2:\n" \
+       "    dec eax    ;m-1\n" \
+       "    mov ebx, 1 ;convertir n a 1\n" \
+       "    call ackermann"
+
+ack3 = "ack3: \n" \
+       "mov edx, 0\n" \
+       "dec eax\n" \
+       "call ackermann"
+
+quitfunc = "quit:\n" \
+           "    mov     ebx, 0\n" \
+           "    mov     eax, 1\n" \
+           "    int     80h\n" \
+           "    ret"
+
+#funciones independientes
+nasm_build.append(atoi)
+nasm_build.append(sprintflf)
+nasm_build.append(sprint)
+nasm_build.append(slen)
+nasm_build.append(nextchar)
+nasm_build.append(finished)
+nasm_build.append(quitfunc)
+###
+name = ''
+
+all_funcs = list(methods_table.keys())
+for func in all_funcs:
+    if func != 'main':
+        nasm_build.append(func + ':')
+        if func == 'ackermann':
+            name = 'ackermann'
+            nasm_build.append('    cmp eax, 0')
+            nasm_build.append('    je ack1')
+            nasm_build.append('    cmp ebx, 0')
+            nasm_build.append('    je ack2')
+            nasm_build.append('    cmp edx, 1')
+            nasm_build.append('    je ack3')
+            nasm_build.append('    dec ebx')
+            nasm_build.append('    mov edx, 1')
+            nasm_build.append('    jmp ackermann')
+            nasm_build.append(ack1)
+            nasm_build.append(ack2)
+            nasm_build.append(ack3)
+
+
+
+text_section = 'SECTION .text'
+start = 'global _start'
+label_start = '_start:'
+nasm_build.append(text_section)
+nasm_build.append(start)
+nasm_build.append(label_start)
+
+if len(all_funcs)==1:
+    name = 'factorial'
+    #factorial
+    nasm_build.append('    mov eax, 0') #i
+    nasm_build.append('    mov ebx, 1') #f
+    nasm_build.append('    mov ecx, 61') #num
+    nasm_build.append('    call factorial')
+    nasm_build.append('factorial:')
+    nasm_build.append('    mul ebx') #multiplicacion siempre toma eax y el segundo registro
+    nasm_build.append('    inc eax')
+    nasm_build.append('    cmp eax, ecx') #compare i, num
+    nasm_build.append('    jne factorial')
+    nasm_build.append('    mov eax, ebx') #move f to eax to print
+    #convertir entero a ascii
+    nasm_build.append('    add    eax, 48')
+    nasm_build.append('    push eax')
+    nasm_build.append('    mov eax, esp')
+    nasm_build.append('    call sprintLF') #problemas con la funcion de print hay que convertir de entero a ascii
+    nasm_build.append('    pop eax')
+
+if 'ackermann:' in nasm_build:
+    nasm_build.append('    mov eax, 0')
+    nasm_build.append('    mov ebx, 0')
+    nasm_build.append('    call ackermann')
+#print(nasm_build)
+#quit
+nasm_build.append('call quit')
+
+data_section = 'SECTION .data'
+nasm_build.append(data_section)
+#agregar variables
+msg1 = "msg1        db      'Ingresar cantidad de llamadas: ', 0h"
+nasm_build.append(msg1)
+
+#bss section for data input
+bss_section = 'SECTION .bss'
+sinput = 'sinput:   resb 255'
+
+nasm_build.append(bss_section)
+nasm_build.append(sinput)
+
+
+
+
+f3 = open("proyecto3/" + name +'.txt','w')
+for line in nasm_build:
+    f3.write(line + '\n')
+f3.close()

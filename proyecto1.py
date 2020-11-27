@@ -9,7 +9,7 @@ class App(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.title = 'Proyecto 1'
+        self.title = 'Proyecto 3'
         self.left = 0
         self.top = 0
         self.width = 300
@@ -80,6 +80,7 @@ class MyTableWidget(QWidget):
 
         self.TextEditor = QPlainTextEdit(self)
         self.TextEditor.resize(100, 100)
+        self.TextEditor.setFont(QFont('Arial', 14))
         self.uploadBtn = QPushButton("Upload file")
         self.uploadBtn.clicked.connect(self.file_open)
         self.submitBtn = QPushButton("Submit")

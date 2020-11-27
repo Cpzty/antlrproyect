@@ -10,10 +10,9 @@ class Program {
         int b;
         int c;
         int d;
-        //if(a==b){c=1} else{c=2}
+        if(a==b){c=1} else{c=2}
         //while(a>b){a=a*2}
-        a = a*b
-        b = a*b
+
 
     }
 }

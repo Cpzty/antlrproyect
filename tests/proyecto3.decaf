@@ -1,0 +1,29 @@
+class Program {
+
+    void pizza(){
+        int queso;
+        return;
+    }
+
+    void pie(){
+        int queso;
+        return;
+    }
+
+    void salsa(){
+        int queso;
+        return;
+    }
+
+    int main(){
+        int a;
+        char d;
+        boolean arr[0];
+        b = 2;
+        d = 'c';
+
+
+        return 0;
+
+    }
+}

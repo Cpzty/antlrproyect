@@ -9,8 +9,15 @@ class Program {
         int b;
         int c;
         int d;
-        a = a*b+c*d+a*e;
+        int e;
+        int f;
 
+        a = a*b;
+        b = a*b;
+        c = a*b;
+        d = b*c;
+        e = a+d;
+        f = a+d;
 
     }
 }
